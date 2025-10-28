@@ -13,14 +13,14 @@ export default async function handler(request) {
   const { prompt } = await request.json();
 
   try {
-    // 使用免费公开模型：gpt2
+    // 调用 gpt2，不带 token（完全公开）
     const hfRes = await fetch('https://api-inference.huggingface.co/models/gpt2', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${process.env.HF_TOKEN}`,
         'Content-Type': 'application/json'
+        // ⚠️ 注意：这里移除了 Authorization
       },
-      body: JSON.stringify({ inputs: prompt || 'Hello, world!' })
+      body: JSON.stringify({ inputs: prompt || 'Hello' })
     });
 
     if (!hfRes.ok) {
