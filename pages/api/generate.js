@@ -13,7 +13,7 @@ export default async function handler(request) {
   const { prompt } = await request.json();
 
   try {
-    const hfRes = await fetch('https://api-inference.huggingface.co/models/fffiloni/realistic-vision-v5.1', {
+    const hfRes = await fetch('https://api-inference.huggingface.co/models/realistic-vision-v5.1', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${process.env.HF_TOKEN}`,
