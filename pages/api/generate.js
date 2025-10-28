@@ -13,13 +13,14 @@ export default async function handler(request) {
   const { prompt } = await request.json();
 
   try {
-    const hfRes = await fetch('https://api-inference.huggingface.co/models/realistic-vision-v5.1', {
+    // 使用免费公开模型：gpt2
+    const hfRes = await fetch('https://api-inference.huggingface.co/models/gpt2', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${process.env.HF_TOKEN}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ inputs: prompt || 'a smiling person' })
+      body: JSON.stringify({ inputs: prompt || 'Hello, world!' })
     });
 
     if (!hfRes.ok) {
@@ -27,13 +28,13 @@ export default async function handler(request) {
       return new Response(errorText, { status: hfRes.status });
     }
 
-    const arrayBuffer = await hfRes.arrayBuffer();
-    return new Response(arrayBuffer, {
-      headers: { 'Content-Type': 'image/jpeg' }
+    const result = await hfRes.json();
+    return new Response(JSON.stringify(result), {
+      headers: { 'Content-Type': 'application/json' }
     });
 
   } catch (err) {
-    return new Response(JSON.stringify({ error: 'Internal error' }), {
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
     });
