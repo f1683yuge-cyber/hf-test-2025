@@ -13,7 +13,7 @@ export default async function handler(request) {
   const { prompt } = await request.json();
 
   try {
-    const hfRes = await fetch('https://api-inference.huggingface.co/models/gpt2', {
+    const response = await fetch('https://api-inference.huggingface.co/models/distilgpt2', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${process.env.HF_TOKEN}`,
@@ -22,17 +22,19 @@ export default async function handler(request) {
       body: JSON.stringify({ inputs: prompt || 'Hello' })
     });
 
-    if (!hfRes.ok) {
-      const errorText = await hfRes.text();
-      return new Response(errorText, { status: hfRes.status });
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Hugging Face error:', errorText);
+      return new Response(errorText, { status: response.status });
     }
 
-    const result = await hfRes.json();
+    const result = await response.json();
     return new Response(JSON.stringify(result), {
       headers: { 'Content-Type': 'application/json' }
     });
 
-  } catch (err) {
+  } catch (error) {
+    console.error('Server error:', error);
     return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
