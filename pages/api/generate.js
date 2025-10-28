@@ -1,3 +1,4 @@
+
 export const config = {
   runtime: 'edge',
 };
@@ -13,11 +14,10 @@ export default async function handler(request) {
   const { prompt } = await request.json();
 
   try {
-    // 使用 token 调用 gpt2（现在必须）
     const hfRes = await fetch('https://api-inference.huggingface.co/models/gpt2', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${process.env.HF_TOKEN}`,
+        Authorization: `Bearer ${process.env.HF_TOKEN}`, // ✅ 正确
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ inputs: prompt || 'Hello' })
